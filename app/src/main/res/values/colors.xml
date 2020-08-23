@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorDark">#000000</color>
+    <color name="colorLight">#FFFFFF</color>
+
+    <color name="beyaz">#FFFFFF</color>
+    <color name="kirmizi">#FF1100</color>
+    <color name="mavi">#000DFF</color>
+    <color name="sari">#FFEB3B</color>
+    <color name="yesil">#6AFF00</color>
+    <color name="siyah">#000000</color>
+</resources>
