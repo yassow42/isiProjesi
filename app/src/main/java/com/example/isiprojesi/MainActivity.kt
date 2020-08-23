@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
         veriAL()
         makineAktiflikleriKontrol()
         butonlar()
@@ -100,9 +102,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun veriAL() {
 
-        rcOgrenciler.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+        rcOgrenciler.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
         val adapter = MainAdapter(this@MainActivity, numaraListesi)
         rcOgrenciler.adapter = adapter
+        ar_indicator_haber.attachTo(rcOgrenciler, true)
+        ar_indicator_haber.isScrubbingEnabled = true
 
         ref.child("isi_verileri").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {

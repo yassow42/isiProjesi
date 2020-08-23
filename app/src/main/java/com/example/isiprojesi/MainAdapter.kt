@@ -87,9 +87,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
         lineDataSets.add(lineDataSet)
         lineData = LineData(lineDataSets as List<ILineDataSet>?)
 
-        if (logSicakliklar[position] > 37) {
-            lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.kirmizi))
-        }
+
         lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.mavi))
         lineDataSet.lineWidth = 2f
         lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))

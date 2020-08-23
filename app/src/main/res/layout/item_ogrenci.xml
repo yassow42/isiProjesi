@@ -3,49 +3,103 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_height="match_parent"
+    android:layout_margin="24dp"
     android:background="@drawable/bg_item">
 
-    <TextView
-        android:id="@+id/tvNumara"
+    <TableLayout
+        android:id="@+id/tableLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="142"
-        android:textColor="@color/beyaz"
-        android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lineChartView">
 
-    <TextView
-        android:id="@+id/tvSonSicaklik"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="35.8"
-        android:textColor="@color/beyaz"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/tvNumara"
-        app:layout_constraintEnd_toStartOf="@+id/lineChartView"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvNumara"
-        app:layout_constraintTop_toTopOf="@+id/tvNumara" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="6dp"
+                android:text="Öğrenci Okul No: "
+                android:textColor="@color/beyaz"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvNumara"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="142"
+                android:textColor="@color/beyaz"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="6dp"
+                android:text="Son Ölçülen Vücut Isısı: "
+                android:textColor="@color/beyaz"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvSonSicaklik"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="35.8"
+                android:textColor="@color/beyaz"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="6dp"
+                android:text="Ort. Vücut Isısı: "
+                android:textColor="@color/beyaz"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvOrtSicaklik"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="36.8"
+                android:textColor="@color/beyaz"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+    </TableLayout>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChartView"
-        android:layout_width="195dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="240dp"
+        android:layout_height="126dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></com.github.mikephil.charting.charts.LineChart>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
