@@ -39,9 +39,9 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
         var numara = numaraList[position].toString()
         holder.tvNumara.text = numara
         holder.setData(myContext, numara)
-        val animation = AnimationUtils.loadAnimation(myContext, R.anim.item_animation_fall_down)
+        val animation = AnimationUtils.loadAnimation(myContext, R.anim.ustten_inme)
         holder.itemView.startAnimation(animation)
-        holder.itemView.setOnClickListener {
+        holder.clVeriler.setOnClickListener {
 
             var bottomSheetDialog = Dialog(myContext, android.R.style.Theme_Light_NoTitleBar_Fullscreen)
             //   var viewBottom = bottomSheetDialog.layoutInflater.inflate(R.layout.bottom_sheet_dialog,android.R.style.Theme_Black_NoTitleBar_Fullscreen)
@@ -64,6 +64,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
                         entries.add(Entry(sayi.toFloat(), logSicakliklar[sayi].toFloat()))
                         labels.add((sayi).toString() + " ölçüm")
                     }
+                  holder.tvOrtSicaklik.text =   logSicakliklar.average().toString()
                     showChart(entries, bottomSheetDialog.lineChartViewBottom, logSicakliklar, position)
 
                 }
@@ -78,9 +79,17 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
         }
 
 
+
+        holder.clVeriler.visibility = View.GONE
+        holder.clNo.setOnClickListener {
+            holder.clVeriler.visibility = View.VISIBLE
+        }
+
     }
 
     private fun showChart(entries: ArrayList<Entry>, gnlineChartView: LineChart, logSicakliklar: ArrayList<Float>, position: Int) {
+
+        //bu detay sayfası ayarları
         lineDataSet.setValues(entries)
         lineDataSet.setLabel("Sıcaklık Değeri")
         lineDataSets.clear()
@@ -138,8 +147,12 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
 
     class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        val clVeriler = itemView.clVeriler
+        val clNo = itemView.clNo
+
         val tvNumara = itemView.tvNumara
         val tvSonSicaklik = itemView.tvSonSicaklik
+        val tvOrtSicaklik = itemView.tvOrtSicaklik
         val lineChartView = itemView.lineChartView
 
 
@@ -180,7 +193,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
                                 labels.add((sayi).toString())
                             }
                         }
-
+                        tvOrtSicaklik.text =  logSicakliklar.average().toDouble().toString()
                         showChart(entries, lineChartView, myContext)
                     } else {
                         lineChartView.clear()
@@ -207,7 +220,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
             lineDataSet.lineWidth = 2f
             lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
             lineDataSet.valueTextColor = R.color.beyaz
-            lineDataSet.valueTextSize = 10f
+            lineDataSet.valueTextSize = 12f
 
             gnlineChartView.setDragOffsetX(15f)
 
