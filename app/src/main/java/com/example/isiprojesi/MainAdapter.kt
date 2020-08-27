@@ -87,58 +87,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
 
     }
 
-    private fun showChart(entries: ArrayList<Entry>, gnlineChartView: LineChart, logSicakliklar: ArrayList<Float>, position: Int) {
 
-        //bu detay sayfası ayarları
-        lineDataSet.setValues(entries)
-        lineDataSet.setLabel("Sıcaklık Değeri")
-        lineDataSets.clear()
-        lineDataSets.add(lineDataSet)
-        lineData = LineData(lineDataSets as List<ILineDataSet>?)
-
-
-        lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.mavi))
-        lineDataSet.lineWidth = 2f
-        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
-        lineDataSet.valueTextColor = R.color.beyaz
-        lineDataSet.valueTextSize = 10f
-
-        gnlineChartView.clear()
-        gnlineChartView.data = lineData
-        gnlineChartView.invalidate()
-
-
-        gnlineChartView.setNoDataText("Veri Alınamadı")
-        gnlineChartView.setNoDataTextColor(R.color.kirmizi)
-        gnlineChartView.setDrawGridBackground(true)
-        gnlineChartView.setGridBackgroundColor(ContextCompat.getColor(myContext, R.color.sari))
-        gnlineChartView.setBackgroundColor(ContextCompat.getColor(myContext, R.color.beyaz))
-        gnlineChartView.setDrawBorders(true)
-        gnlineChartView.setBorderWidth(0.3f)
-
-        lineDataSet.valueTextSize = 12f
-        lineDataSet.setDrawValues(true)
-        lineDataSet.setDrawCircles(true)
-        lineDataSet.setHighlightEnabled(true)
-
-
-        lineDataSet.valueTextColor = Color.BLUE
-        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.kirmizi))
-        lineDataSet.lineWidth = 3f
-        lineDataSet.setDrawCircleHole(false)
-        lineDataSet.enableDashedLine(10f, 4f, 0f)
-
-
-        gnlineChartView.xAxis.textSize = 12f
-        gnlineChartView.description.isEnabled = false
-        gnlineChartView.axisLeft.isEnabled = false
-        gnlineChartView.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
-        gnlineChartView.xAxis.labelCount = 8
-        gnlineChartView.xAxis.xOffset = 3f
-        gnlineChartView.axisLeft.yOffset = 8f
-
-
-    }
 
     override fun getItemCount(): Int {
         return numaraList.size
@@ -194,6 +143,7 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
                             }
                         }
                         tvOrtSicaklik.text =  logSicakliklar.average().toDouble().toString()
+                        ref.child("isi_verileri").child(numara).child("ort_sicaklik").setValue(logSicakliklar.average())
                         showChart(entries, lineChartView, myContext)
                     } else {
                         lineChartView.clear()
@@ -258,7 +208,58 @@ class MainAdapter(val myContext: Context, val numaraList: ArrayList<Int>) : Recy
 
 
     }
+    private fun showChart(entries: ArrayList<Entry>, gnlineChartView: LineChart, logSicakliklar: ArrayList<Float>, position: Int) {
 
+        //bu detay sayfası ayarları
+        lineDataSet.setValues(entries)
+        lineDataSet.setLabel("Sıcaklık Değeri")
+        lineDataSets.clear()
+        lineDataSets.add(lineDataSet)
+        lineData = LineData(lineDataSets as List<ILineDataSet>?)
+
+
+        lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.mavi))
+        lineDataSet.lineWidth = 2f
+        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
+        lineDataSet.valueTextColor = R.color.beyaz
+        lineDataSet.valueTextSize = 10f
+
+        gnlineChartView.clear()
+        gnlineChartView.data = lineData
+        gnlineChartView.invalidate()
+
+
+        gnlineChartView.setNoDataText("Veri Alınamadı")
+        gnlineChartView.setNoDataTextColor(R.color.kirmizi)
+        gnlineChartView.setDrawGridBackground(true)
+        gnlineChartView.setGridBackgroundColor(ContextCompat.getColor(myContext, R.color.sari))
+        gnlineChartView.setBackgroundColor(ContextCompat.getColor(myContext, R.color.beyaz))
+        gnlineChartView.setDrawBorders(true)
+        gnlineChartView.setBorderWidth(0.3f)
+
+        lineDataSet.valueTextSize = 12f
+        lineDataSet.setDrawValues(true)
+        lineDataSet.setDrawCircles(true)
+        lineDataSet.setHighlightEnabled(true)
+
+
+        lineDataSet.valueTextColor = Color.BLUE
+        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.kirmizi))
+        lineDataSet.lineWidth = 3f
+        lineDataSet.setDrawCircleHole(false)
+        lineDataSet.enableDashedLine(10f, 4f, 0f)
+
+
+        gnlineChartView.xAxis.textSize = 12f
+        gnlineChartView.description.isEnabled = false
+        gnlineChartView.axisLeft.isEnabled = false
+        gnlineChartView.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        gnlineChartView.xAxis.labelCount = 8
+        gnlineChartView.xAxis.xOffset = 3f
+        gnlineChartView.axisLeft.yOffset = 8f
+
+
+    }
 
 }
 

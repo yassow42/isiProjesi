@@ -126,65 +126,52 @@ class MainActivity : AppCompatActivity() {
                         Log.e("sad2", mak1AktifMi + "  " + secilenMakine)
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 1") {
                             bottomSheetDialogNo.show()
-
-                            ref.child("Makineler/Mak1_Sicaklik").addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    bottomSheetDialogNo.tvMak1Sicaklik.setText("Mak1: " + snapshot.value.toString())
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-
-                                }
-
-                            })
-
                             bottomSheetDialogNo.mak1LinearLay.visibility = View.VISIBLE
+
+                            bottomSheetDialogNo.imgMak1.setOnClickListener {
+                                var girilenOgrNo = bottomSheetDialogNo.etOgrenciNo1.text.toString()
+                                if (girilenOgrNo!!.isNotEmpty()) {
+                                    ref.child("Makineler/Mak1").setValue(girilenOgrNo.toString())
+                                }
+
+                            }
+
                         } else {
                             bottomSheetDialogNo.mak1LinearLay.visibility = View.GONE
                         }
 
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 2") {
                             bottomSheetDialogNo.show()
-
-                            ref.child("Makineler/Mak2_Sicaklik").addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    bottomSheetDialogNo.tvMak2Sicaklik.setText("Mak2: " + snapshot.value.toString())
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-
-                                }
-
-                            })
-
                             bottomSheetDialogNo.mak2LinearLay.visibility = View.VISIBLE
-                        } else {
 
+                        } else {
                             bottomSheetDialogNo.mak2LinearLay.visibility = View.GONE
                         }
 
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 3") {
+
                             bottomSheetDialogNo.show()
-
-                            ref.child("Makineler/Mak3_Sicaklik").addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    bottomSheetDialogNo.tvMak3Sicaklik.setText("Mak3: " + snapshot.value.toString())
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-
-                                }
-
-                            })
-
                             bottomSheetDialogNo.mak3LinearLay.visibility = View.VISIBLE
-                        } else {
 
+                        } else {
                             bottomSheetDialogNo.mak3LinearLay.visibility = View.GONE
                         }
 
 
                     }
+
+                    ref.child("Makineler").addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(p0: DataSnapshot) {
+                            bottomSheetDialogNo.tvMak1Sicaklik.setText("Mak1: " + p0.child("Mak1_Sicaklik").value.toString())
+                            bottomSheetDialogNo.tvMak2Sicaklik.setText("Mak2: " + p0.child("Mak2_Sicaklik").value.toString())
+                            bottomSheetDialogNo.tvMak3Sicaklik.setText("Mak3: " + p0.child("Mak3_Sicaklik").value.toString())
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+
+                        }
+
+                    })
 
                 }
 
