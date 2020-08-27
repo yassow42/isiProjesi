@@ -44,6 +44,10 @@ dependencies {
 
     implementation 'com.github.martinstamenkovski:ARIndicatorView:2.0.0'
 
+    implementation "androidx.room:room-runtime:2.2.5"
+
+
+
 
 
 }

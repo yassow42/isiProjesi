@@ -27,69 +27,7 @@
             tools:itemCount="1"
             tools:listitem="@layout/item_ogrenci" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:padding="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/rcOgrenciler"
-            app:layout_constraintStart_toStartOf="@+id/rcOgrenciler">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutMakine1"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="15"
-                    android:visibility="visible">
-
-                    <androidx.appcompat.widget.AppCompatEditText
-                        android:id="@+id/etOgrenciNo1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/note"
-                        android:drawablePadding="8dp"
-                        android:ems="10"
-                        android:hint="Mak1'de ki Ögr. No"
-                        android:inputType="none"
-                        android:paddingLeft="17dp"
-                        android:paddingTop="10dp"
-                        android:paddingRight="15dp"
-                        android:paddingBottom="10dp"
-                        android:textColor="#000000"
-                        android:textColorHint="#9C27B0"
-                        android:visibility="gone" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <ImageView
-                    android:id="@+id/imgMak1"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/check" />
-
-                <TextView
-                    android:id="@+id/tvMak1Sicaklik"
-                    android:layout_width="55dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:text="TextView"
-                    android:textColor="@color/kirmizi"
-                    android:textSize="18sp" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

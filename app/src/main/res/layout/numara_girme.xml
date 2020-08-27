@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:visibility="visible"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="4dp">
+
+            <LinearLayout
+                android:id="@+id/mak1LinearLay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutMakine1"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="215dp"
+                    android:layout_height="50dp"
+                    android:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etOgrenciNo1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/note"
+                        android:drawablePadding="8dp"
+                        android:ems="10"
+                        android:hint="Mak1'de ki Ögr. No"
+                        android:inputType="number"
+                        android:paddingLeft="17dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#9C27B0"
+                        android:visibility="visible" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/imgMak1"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/check" />
+
+                <TextView
+                    android:id="@+id/tvMak1Sicaklik"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:text="TextView"
+                    android:textColor="@color/kirmizi"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mak2LinearLay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutMakine2"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="215dp"
+                    android:layout_height="50dp"
+                    android:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etOgrenciNo2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/note"
+                        android:drawablePadding="8dp"
+                        android:ems="10"
+                        android:hint="Mak2'de ki Ögr. No"
+                        android:inputType="none"
+                        android:paddingLeft="17dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#9C27B0"
+                        android:visibility="visible" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/imgMak2"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/check" />
+
+                <TextView
+                    android:id="@+id/tvMak2Sicaklik"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:text="TextView"
+                    android:textColor="@color/kirmizi"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/mak3LinearLay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textInputLayoutMakine3"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="215dp"
+                    android:layout_height="50dp"
+                    android:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etOgrenciNo3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/note"
+                        android:drawablePadding="8dp"
+                        android:ems="10"
+                        android:hint="Mak3'de ki Ögr. No"
+                        android:inputType="none"
+                        android:paddingLeft="17dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="15dp"
+                        android:paddingBottom="10dp"
+                        android:textColor="#000000"
+                        android:textColorHint="#9C27B0"
+                        android:visibility="visible" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/imgMak3"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/check" />
+
+                <TextView
+                    android:id="@+id/tvMak3Sicaklik"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:text="TextView"
+                    android:textColor="@color/kirmizi"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
