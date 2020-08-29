@@ -1,26 +1,40 @@
 package com.example.isiprojesi
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.hangi_makine.*
-import kotlinx.android.synthetic.main.numara_girme.*
+import kotlinx.android.synthetic.main.numara_girme.view.*
 
 class MainActivity : AppCompatActivity() {
     val numaraListesi = ArrayList<Int>()
-    lateinit var adapter: MainAdapter
+    val ogrenciOrtSicakliklari = ArrayList<Float>()
 
+    //grafik verileri
+    var lineDataSet = LineDataSet(null, null)
+    var lineDataSets = ArrayList<LineDataSet>()
+    val okulOrtSicakliklari = ArrayList<Float>()
+    val okulOrtSicaklikKeyleri = ArrayList<String>()
+
+    lateinit var lineData: LineData
+
+
+    lateinit var adapter: MainAdapter
     val ref = FirebaseDatabase.getInstance().reference
 
 
@@ -99,125 +113,212 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun makineAktiflikleriKontrol(prefences: SharedPreferences, editor: SharedPreferences.Editor) {
-        var bottomSheetDialogNo = Dialog(this@MainActivity, android.R.style.Theme_Light)
 
-        bottomSheetDialogNo.setTitle("Öğrenci No Giriniz: ")
+        val mDialogView = LayoutInflater.from(this@MainActivity).inflate(R.layout.numara_girme, null)
+        val mBuilder = AlertDialog.Builder(this@MainActivity)
+            .setView(mDialogView)
+            .setTitle("Öğrenci No Giriniz: ").create()
 
-        bottomSheetDialogNo.setOnDismissListener {
-            Log.e("sad", "kapatıldı")
+        mDialogView.imgCancel.setOnClickListener {
+            mDialogView.etOgrenciNo1.text!!.clear()
+            mBuilder.dismiss()
         }
-        // bottomSheetDialogNo.setCancelable(false)
-        //  bottomSheetDialogNo.setContentView(R.layout.numara_girme)
-        //   var viewBottom = bottomSheetDialogNo.layoutInflater.inflate(R.layout.bottom_sheet_dialog,R.style.Theme_Design_BottomSheetDialog)
-        //   bottomSheetDialogNo.setContentView(viewBottom)
-        bottomSheetDialogNo.setContentView(R.layout.numara_girme)
-
 
         if (makineSecildimi) {
 
             var secilenMakine = prefences.getString("Seçilen Makine", "Makine Boş")
-            Log.e("sad", secilenMakine.toString())
-
             ref.child("mak_aktiflikleri").addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(p0: DataSnapshot) {
                     if (p0.hasChildren()) {
                         var mak1AktifMi = p0.child("Mak1").value.toString()
 
-                        Log.e("sad2", mak1AktifMi + "  " + secilenMakine)
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 1") {
-                            bottomSheetDialogNo.show()
-                            bottomSheetDialogNo.mak1LinearLay.visibility = View.VISIBLE
+                            mBuilder.show()
+                            mDialogView.etOgrenciNo1.text!!.clear()
+                            mDialogView.mak1LinearLay.visibility = View.VISIBLE
 
-                            bottomSheetDialogNo.imgMak1.setOnClickListener {
-                                var girilenOgrNo = bottomSheetDialogNo.etOgrenciNo1.text.toString()
-                                if (girilenOgrNo!!.isNotEmpty()) {
+                            Log.e("no list", numaraListesi.size.toString())
+                            mDialogView.imgOnay.setOnClickListener {
+                                var girilenOgrNo = mDialogView.etOgrenciNo1.text.toString()
+
+                                var girilenNoVarmi = linearSearch(numaraListesi, girilenOgrNo)
+                                if (girilenOgrNo!!.isNotEmpty() && girilenNoVarmi == 1) {
                                     ref.child("Makineler/Mak1").setValue(girilenOgrNo.toString())
+                                    mDialogView.etOgrenciNo1.text!!.clear()
+                                }else if (girilenNoVarmi==-1){
+                                    ref.child("Makineler/Mak1").setValue(girilenOgrNo.toString())
+                                    ref.child("isi_verileri").child(girilenOgrNo).child("ort_sicaklik").setValue(36)
                                 }
 
+                                mBuilder.dismiss()
                             }
 
-                        } else {
-                            bottomSheetDialogNo.mak1LinearLay.visibility = View.GONE
-                        }
 
+
+                        } else {
+                            mDialogView.mak1LinearLay.visibility = View.GONE
+                        }
+////////////////////////////////////////////////////////////////////////////////////////////////////MAKİNE2/////////////////////////////////////////////////////////
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 2") {
-                            bottomSheetDialogNo.show()
-                            bottomSheetDialogNo.mak2LinearLay.visibility = View.VISIBLE
+                            mBuilder.show()
+                            mDialogView.etOgrenciNo2.text!!.clear()
+                            mDialogView.mak2LinearLay.visibility = View.VISIBLE
+
+
 
                         } else {
-                            bottomSheetDialogNo.mak2LinearLay.visibility = View.GONE
-                        }
 
+                            mDialogView.mak2LinearLay.visibility = View.GONE
+                        }
                         if (mak1AktifMi == "Aktif" && secilenMakine == "Makine 3") {
-
-                            bottomSheetDialogNo.show()
-                            bottomSheetDialogNo.mak3LinearLay.visibility = View.VISIBLE
-
+                            mDialogView.mak3LinearLay.visibility = View.VISIBLE
                         } else {
-                            bottomSheetDialogNo.mak3LinearLay.visibility = View.GONE
+                            mDialogView.mak3LinearLay.visibility = View.GONE
                         }
-
 
                     }
-
                     ref.child("Makineler").addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(p0: DataSnapshot) {
-                            bottomSheetDialogNo.tvMak1Sicaklik.setText("Mak1: " + p0.child("Mak1_Sicaklik").value.toString())
-                            bottomSheetDialogNo.tvMak2Sicaklik.setText("Mak2: " + p0.child("Mak2_Sicaklik").value.toString())
-                            bottomSheetDialogNo.tvMak3Sicaklik.setText("Mak3: " + p0.child("Mak3_Sicaklik").value.toString())
+                            mDialogView.tvMak1Sicaklik.setText(p0.child("Mak1_Sicaklik").value.toString())
+                            mDialogView.tvMak2Sicaklik.setText(p0.child("Mak2_Sicaklik").value.toString())
+                            mDialogView.tvMak3Sicaklik.setText(p0.child("Mak3_Sicaklik").value.toString())
                         }
 
                         override fun onCancelled(error: DatabaseError) {
 
                         }
-
                     })
-
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                 }
-
             })
-
-
         }
-
     }
 
+    fun linearSearch(numaraListesi: ArrayList<Int>, girilenOgrNo: String): Int { //linearSearch metotumuz
+        for (i in numaraListesi) {
+            if (i == girilenOgrNo.toInt()) {
+                return 1
+            }
+        }
+        return -1
+    }
 
     private fun veriAL() {
 
+        val entries = ArrayList<Entry>()
+        val labels = ArrayList<String>()
 
-        ref.child("isi_verileri").addListenerForSingleValueEvent(object : ValueEventListener {
+
+
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 numaraListesi.clear()
-                if (p0.hasChildren()) {
-                    for (i in p0.children) {
+                if (p0.child("isi_verileri").hasChildren()) {
+                    for (i in p0.child("isi_verileri").children) {
                         numaraListesi.add(i.key.toString().toInt())
                     }
-                }
+                    adapter.notifyDataSetChanged()
+                    for (ds in numaraListesi) {
+                        ogrenciOrtSicakliklari.add(p0.child("isi_verileri").child(ds.toString()).child("ort_sicaklik").value.toString().toFloat())
+                    }
 
-                adapter.notifyDataSetChanged()
+                    for (i in p0.child("ort_okul").children) okulOrtSicaklikKeyleri.add(i.key.toString())
+
+                    for (i in okulOrtSicaklikKeyleri) {
+                        okulOrtSicakliklari.add(p0.child("ort_okul").child(i.toString()).child("ort_sicaklik").value.toString().toFloat())
+                    }
+
+                    if (okulOrtSicakliklari.size < 10) {
+                        for (sayi in 0..okulOrtSicakliklari.size - 1) {
+                            entries.add(Entry(sayi.toFloat(), okulOrtSicakliklari[sayi].toFloat()))
+                            labels.add((sayi).toString())
+                        }
+                    } else {
+                        for (sayi in okulOrtSicakliklari.size - 7..okulOrtSicakliklari.size - 1) {
+                            entries.add(Entry(sayi.toFloat(), okulOrtSicakliklari[sayi].toFloat()))
+                            labels.add((sayi).toString())
+                        }
+                    }
+
+                    showChart(entries, labels)
+
+
+                    var gece3 = p0.child("zaman").child("gun").value.toString().toLong()
+                    var suankiZaman = System.currentTimeMillis()
+
+                    if (gece3 < suankiZaman) {
+                        var guncelGece3 = gece3 + 86400000
+                        ref.child("zaman").child("gun").setValue(guncelGece3)
+                        var ortOkulKey = ref.child("ort_okul").push().key.toString()
+                        ref.child("ort_okul").child(ortOkulKey).child("ort_sicaklik").setValue(ogrenciOrtSicakliklari.average())
+                    }
+                }
 
 
             }
 
             override fun onCancelled(p0: DatabaseError) {
                 TODO("Not yet implemented")
+
+
             }
-
-
         })
 
 
     }
 
+
     private fun setupRecyclerView() {
         rcOgrenciler.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-        adapter = MainAdapter(this@MainActivity, numaraListesi)
+        adapter = MainAdapter(this@MainActivity, numaraListesi, okulOrtSicakliklari)
         rcOgrenciler.adapter = adapter
     }
 
+    private fun showChart(entries: ArrayList<Entry>, labels: ArrayList<String>) {
+        lineDataSet.setValues(entries)
+        lineDataSet.setLabel("Ort. Değerler")
+        lineDataSets.clear()
+        lineDataSets.add(lineDataSet)
+        lineData = LineData(lineDataSets as List<ILineDataSet>?)
+
+        lineDataSet.setColors(ContextCompat.getColor(this, R.color.mavi))
+        lineDataSet.lineWidth = 2f
+        lineDataSet.setCircleColor(ContextCompat.getColor(this, R.color.yesil))
+        lineDataSet.valueTextColor = R.color.beyaz
+        lineDataSet.valueTextSize = 12f
+
+        lineChartViewMainActivity.setDragOffsetX(15f)
+
+        lineChartViewMainActivity.setNoDataText("Veri Alınamadı")
+        lineChartViewMainActivity.setNoDataTextColor(R.color.kirmizi)
+        lineChartViewMainActivity.setDrawGridBackground(true)
+        lineChartViewMainActivity.setGridBackgroundColor(ContextCompat.getColor(this, R.color.sari))
+        //     lineChartViewMainActivity.setBackgroundColor(ContextCompat.getColor(this, R.color.beyaz))
+        lineChartViewMainActivity.setDrawBorders(true)
+        lineChartViewMainActivity.setBorderWidth(0.3f)
+
+
+        lineChartViewMainActivity.clear()
+        lineChartViewMainActivity.data = lineData
+        lineChartViewMainActivity.invalidate()
+        lineChartViewMainActivity.animateY(1000)
+
+        lineChartViewMainActivity.description.isEnabled = false
+        lineChartViewMainActivity.axisLeft.isEnabled = false
+        lineChartViewMainActivity.axisLeft.textSize = 8f
+        lineChartViewMainActivity.xAxis.textSize = 8f
+
+        lineChartViewMainActivity.xAxis.labelCount = entries.size
+        //   gnlineChartView.extraBottomOffset = 8f
+        lineChartViewMainActivity.xAxis.setDrawAxisLine(false)
+        lineChartViewMainActivity.xAxis.setCenterAxisLabels(true)
+
+        lineChartViewMainActivity.xAxis.isEnabled = false
+        lineChartViewMainActivity.axisLeft.setEnabled(false)
+        lineChartViewMainActivity.axisRight.setEnabled(false)
+
+    }
 
 }
