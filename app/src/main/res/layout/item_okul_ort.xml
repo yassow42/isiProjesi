@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_margin="12dp"
     android:background="@drawable/bg_cardview"
     app:cardCornerRadius="15dp">
 
@@ -14,7 +14,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clVeriler"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/beyaz"
             android:visibility="visible"
@@ -24,28 +24,54 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clNo"
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="0dp"
                 android:background="@drawable/bg_rc_item"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
+
                 <TextView
-                    android:id="@+id/tvNumara"
-                    android:layout_width="45dp"
+                    android:id="@+id/tvTarihGun"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
                     android:maxLines="1"
                     android:text="142"
                     android:textAlignment="center"
                     android:textColor="@color/siyah"
-                    android:textSize="20sp"
                     android:textStyle="bold"
+                    app:autoSizeMaxTextSize="18dp"
+                    app:autoSizeMinTextSize="12dp"
+                    app:layout_constraintBottom_toTopOf="@+id/tvTarihAy"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.47000003" />
+
+                <TextView
+                    android:id="@+id/tvTarihAy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:maxLines="1"
+                    android:text="142"
+                    android:textAlignment="center"
+                    android:textColor="@color/siyah"
+                    android:textStyle="bold"
+                    app:autoSizeMaxTextSize="18dp"
+                    app:autoSizeMinTextSize="12dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvTarihGun" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -53,47 +79,12 @@
                 android:id="@+id/tableLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/clNo"
-                app:layout_constraintTop_toBottomOf="@+id/lineChartView">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="4dp">
-
-                    <TextView
-                        android:id="@+id/textView3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Son Ölçülen Vücut Isısı: "
-                        android:textColor="#1B62F3"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/tvSonSicaklik"
-                        android:layout_width="45dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="3dp"
-                        android:maxLines="1"
-                        android:text="35.8°"
-                        android:textColor="#1B62F3"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/imageView"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        app:srcCompat="@drawable/ic_temperature" />
-                </TableRow>
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TableRow
                     android:layout_width="wrap_content"
@@ -105,12 +96,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Ort. Vücut Isısı: "
+                        android:text="Ort. Okul Isısı: "
                         android:textColor="#1B62F3"
-                        android:textSize="14sp" />
+                        android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvOrtSicaklik"
+                        android:id="@+id/tvOrtOkulSicaklik"
                         android:layout_width="45dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -118,7 +109,7 @@
                         android:maxLines="1"
                         android:text="36.8"
                         android:textColor="#1B62F3"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <ImageView
@@ -130,17 +121,6 @@
                 </TableRow>
 
             </TableLayout>
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/lineChartView"
-                android:layout_width="270dp"
-                android:layout_height="135dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/clNo"
-                app:layout_constraintTop_toTopOf="parent"></com.github.mikephil.charting.charts.LineChart>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

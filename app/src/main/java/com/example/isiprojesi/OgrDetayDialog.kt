@@ -7,20 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.numara_girme.view.*
 
-class NumaraDialog : DialogFragment() {
+class OgrDetayDialog : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var rootView: View = inflater.inflate(R.layout.numara_girme, container, false)
-        var cancelButton = rootView.imgCancel
-        var onayButton = rootView.imgOnay
+        super.onCreateView(inflater, container, savedInstanceState)
+        val rootView: View = inflater.inflate(R.layout.bottom_sheet_dialog, container, false)
 
-        cancelButton.setOnClickListener {
-
-        }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return rootView
     }
 }

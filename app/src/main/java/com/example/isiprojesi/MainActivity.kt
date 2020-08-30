@@ -12,6 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var lineData: LineData
 
 
-    lateinit var adapter: MainAdapter
+    lateinit var adapter: OgrAdapter
     val ref = FirebaseDatabase.getInstance().reference
 
 
@@ -42,7 +43,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+
+
 
         val prefences = getSharedPreferences("hangiMak", Context.MODE_PRIVATE)
         val editor = prefences.edit()
@@ -51,7 +55,6 @@ class MainActivity : AppCompatActivity() {
         hangiMakcalisiyrsun(prefences, editor)
 
         veriAL()
-
 
         //dialog ile hangı makıneye baktıgı cıksın mak1e bakan sadece o makıneye veri girsin
         setupRecyclerView()
@@ -145,14 +148,13 @@ class MainActivity : AppCompatActivity() {
                                 if (girilenOgrNo!!.isNotEmpty() && girilenNoVarmi == 1) {
                                     ref.child("Makineler/Mak1").setValue(girilenOgrNo.toString())
                                     mDialogView.etOgrenciNo1.text!!.clear()
-                                }else if (girilenNoVarmi==-1){
+                                } else if (girilenNoVarmi == -1) {
                                     ref.child("Makineler/Mak1").setValue(girilenOgrNo.toString())
                                     ref.child("isi_verileri").child(girilenOgrNo).child("ort_sicaklik").setValue(36)
                                 }
 
                                 mBuilder.dismiss()
                             }
-
 
 
                         } else {
@@ -163,7 +165,6 @@ class MainActivity : AppCompatActivity() {
                             mBuilder.show()
                             mDialogView.etOgrenciNo2.text!!.clear()
                             mDialogView.mak2LinearLay.visibility = View.VISIBLE
-
 
 
                         } else {
@@ -211,7 +212,6 @@ class MainActivity : AppCompatActivity() {
         val labels = ArrayList<String>()
 
 
-
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 numaraListesi.clear()
@@ -245,16 +245,8 @@ class MainActivity : AppCompatActivity() {
                     showChart(entries, labels)
 
 
-                    var gece3 = p0.child("zaman").child("gun").value.toString().toLong()
-                    var suankiZaman = System.currentTimeMillis()
-
-                    if (gece3 < suankiZaman) {
-                        var guncelGece3 = gece3 + 86400000
-                        ref.child("zaman").child("gun").setValue(guncelGece3)
-                        var ortOkulKey = ref.child("ort_okul").push().key.toString()
-                        ref.child("ort_okul").child(ortOkulKey).child("ort_sicaklik").setValue(ogrenciOrtSicakliklari.average())
-                    }
                 }
+
 
 
             }
@@ -266,13 +258,34 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        ref.addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onDataChange(p0: DataSnapshot) {
+                var gece3 = p0.child("zaman").child("gun").value.toString().toLong()
+                var suankiZaman = System.currentTimeMillis()
+
+                if (gece3 < suankiZaman) {
+                    var guncelGece3 = gece3 + 86400000
+                    ref.child("zaman").child("gun").setValue(guncelGece3)
+                    var ortOkulKey = ref.child("ort_okul").push().key.toString()
+                    ref.child("ort_okul").child(ortOkulKey).child("ort_sicaklik").setValue(ogrenciOrtSicakliklari.average())
+                    ref.child("ort_okul").child(ortOkulKey).child("olcum_zaman").setValue(ogrenciOrtSicakliklari.average())
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+
+
 
     }
 
 
     private fun setupRecyclerView() {
         rcOgrenciler.layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-        adapter = MainAdapter(this@MainActivity, numaraListesi, okulOrtSicakliklari)
+        adapter = OgrAdapter(this@MainActivity, numaraListesi, okulOrtSicakliklari)
         rcOgrenciler.adapter = adapter
     }
 
@@ -285,9 +298,11 @@ class MainActivity : AppCompatActivity() {
 
         lineDataSet.setColors(ContextCompat.getColor(this, R.color.mavi))
         lineDataSet.lineWidth = 2f
-        lineDataSet.setCircleColor(ContextCompat.getColor(this, R.color.yesil))
-        lineDataSet.valueTextColor = R.color.beyaz
-        lineDataSet.valueTextSize = 12f
+        lineDataSet.setCircleColor(ContextCompat.getColor(this, R.color.kirmizi))
+       // lineDataSet.valueTextColor = R.color.beyaz
+        lineDataSet.valueTextSize = 0f
+
+
 
         lineChartViewMainActivity.setDragOffsetX(15f)
 
@@ -295,30 +310,42 @@ class MainActivity : AppCompatActivity() {
         lineChartViewMainActivity.setNoDataTextColor(R.color.kirmizi)
         lineChartViewMainActivity.setDrawGridBackground(true)
         lineChartViewMainActivity.setGridBackgroundColor(ContextCompat.getColor(this, R.color.sari))
-        //     lineChartViewMainActivity.setBackgroundColor(ContextCompat.getColor(this, R.color.beyaz))
+        lineChartViewMainActivity.setBackgroundColor(ContextCompat.getColor(this, R.color.beyaz))
         lineChartViewMainActivity.setDrawBorders(true)
         lineChartViewMainActivity.setBorderWidth(0.3f)
 
 
         lineChartViewMainActivity.clear()
         lineChartViewMainActivity.data = lineData
-        lineChartViewMainActivity.invalidate()
         lineChartViewMainActivity.animateY(1000)
 
         lineChartViewMainActivity.description.isEnabled = false
-        lineChartViewMainActivity.axisLeft.isEnabled = false
+        // lineChartViewMainActivity.axisLeft.isEnabled = false
         lineChartViewMainActivity.axisLeft.textSize = 8f
         lineChartViewMainActivity.xAxis.textSize = 8f
 
         lineChartViewMainActivity.xAxis.labelCount = entries.size
         //   gnlineChartView.extraBottomOffset = 8f
-        lineChartViewMainActivity.xAxis.setDrawAxisLine(false)
+        //   lineChartViewMainActivity.xAxis.setDrawAxisLine(false)
         lineChartViewMainActivity.xAxis.setCenterAxisLabels(true)
 
         lineChartViewMainActivity.xAxis.isEnabled = false
-        lineChartViewMainActivity.axisLeft.setEnabled(false)
+        lineChartViewMainActivity.xAxis.setDrawGridLines(false)
+        lineChartViewMainActivity.xAxis.setDrawAxisLine(false)
+        lineChartViewMainActivity.xAxis.position = XAxis.XAxisPosition.BOTTOM
+        //lineChartViewMainActivity.axisLeft.setEnabled(false) lineChartViewMainActivity.axisLeft.setDrawLabels(false)
+
+
         lineChartViewMainActivity.axisRight.setEnabled(false)
 
+
+
+
+        lineChartViewMainActivity.invalidate()
+
     }
+
+
+
 
 }
