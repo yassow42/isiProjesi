@@ -1,11 +1,11 @@
 package com.example.isiprojesi.fragmentler
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.isiprojesi.OgrAdapter
 import com.example.isiprojesi.R
@@ -19,19 +19,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_ogrenciler.view.*
-import kotlinx.android.synthetic.main.fragment_okulverileri.*
+
 
 class OgrencilerFragment : Fragment() {
 
 
-    val numaraListesi = ArrayList<Int>()
-    val ogrenciOrtSicakliklari = ArrayList<Float>()
-
-    //grafik verileri
-    var lineDataSet = LineDataSet(null, null)
-    var lineDataSets = ArrayList<LineDataSet>()
-    val okulOrtSicakliklari = ArrayList<Float>()
-    val okulOrtSicaklikKeyleri = ArrayList<String>()
 
     lateinit var lineData: LineData
 
@@ -48,7 +40,7 @@ class OgrencilerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_ogrenciler, container, false)
-        setupRecyclerVieww(view)
+
 
         veriAL(view)
         view.refreshLayoutOgr.setOnRefreshListener {
@@ -57,19 +49,26 @@ class OgrencilerFragment : Fragment() {
         }
 
 
-
         return view
     }
 
     private fun veriAL(view: View) {
 
+        val numaraListesi = ArrayList<Int>()
+        val ogrenciOrtSicakliklari = ArrayList<Float>()
+        val okulOrtSicakliklari = ArrayList<Float>()
+        //grafik verileri
+        var lineDataSet = LineDataSet(null, null)
+        var lineDataSets = ArrayList<LineDataSet>()
+
+        val okulOrtSicaklikKeyleri = ArrayList<String>()
         val entries = ArrayList<Entry>()
         val labels = ArrayList<String>()
 
 
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                numaraListesi.clear()
+
                 if (p0.child("isi_verileri").hasChildren()) {
                     for (i in p0.child("isi_verileri").children) {
                         numaraListesi.add(i.key.toString().toInt())
@@ -96,8 +95,8 @@ class OgrencilerFragment : Fragment() {
                         }
                     }
 
-                    showChart(view, entries, labels)
-
+                    showChart(view, entries, labels,lineDataSet,lineDataSets)
+                    setupRecyclerView(view,numaraListesi,okulOrtSicakliklari)
 
                 }
 
@@ -105,7 +104,7 @@ class OgrencilerFragment : Fragment() {
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
+
 
 
             }
@@ -115,13 +114,13 @@ class OgrencilerFragment : Fragment() {
     }
 
 
-    private fun setupRecyclerVieww(view: View) {
+    private fun setupRecyclerView(view: View, numaraListesi: ArrayList<Int>, okulOrtSicakliklari: ArrayList<Float>) {
         view.rcOgrFragment.layoutManager = LinearLayoutManager(context!!.applicationContext, LinearLayoutManager.VERTICAL, false)
         val adapter = OgrAdapter(context!!.applicationContext, numaraListesi, okulOrtSicakliklari)
         view.rcOgrFragment.adapter = adapter
     }
 
-    private fun showChart(view: View, entries: ArrayList<Entry>, labels: ArrayList<String>) {
+    private fun showChart(view: View, entries: ArrayList<Entry>, labels: ArrayList<String>, lineDataSet: LineDataSet, lineDataSets: ArrayList<LineDataSet>) {
         lineDataSet.setValues(entries)
         lineDataSet.setLabel("Ort. Değerler")
         lineDataSets.clear()

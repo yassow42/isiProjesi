@@ -19,18 +19,12 @@ import kotlinx.android.synthetic.main.fragment_okulverileri.view.*
 
 class OkulVerileriFragment : Fragment() {
 
-    val numaraListesi = ArrayList<Int>()
-    val ogrenciOrtSicakliklari = ArrayList<Float>()
 
-    //grafik verileri
-    var lineDataSet = LineDataSet(null, null)
-    var lineDataSets = ArrayList<LineDataSet>()
-    val okulOrtSicakliklari = ArrayList<Float>()
-    val okulOrtSicaklikKeyleri = ArrayList<String>()
 
     lateinit var lineData: LineData
 
     var ref = FirebaseDatabase.getInstance().reference
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,10 +44,20 @@ class OkulVerileriFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
     }
 
     private fun veriAL() {
+
+        val numaraListesi = ArrayList<Int>()
+        val ogrenciOrtSicakliklari = ArrayList<Float>()
+
+        //grafik verileri
+        var lineDataSet = LineDataSet(null, null)
+        var lineDataSets = ArrayList<LineDataSet>()
+        val okulOrtSicakliklari = ArrayList<Float>()
+        val okulOrtSicaklikKeyleri = ArrayList<String>()
+
+
 
         val entries = ArrayList<Entry>()
         val labels = ArrayList<String>()
@@ -68,7 +72,10 @@ class OkulVerileriFragment : Fragment() {
                     }
 
                     for (ds in numaraListesi) {
-                        ogrenciOrtSicakliklari.add(p0.child("isi_verileri").child(ds.toString()).child("ort_sicaklik").value.toString().toFloat())
+                        var ortSicaklik = p0.child("isi_verileri").child(ds.toString()).child("ort_sicaklik").value.toString().toFloat()
+                        ortSicaklik?.let {
+                            ogrenciOrtSicakliklari.add(it)
+                        }
                     }
 
                     for (i in p0.child("ort_okul").children) okulOrtSicaklikKeyleri.add(i.key.toString())
@@ -89,7 +96,7 @@ class OkulVerileriFragment : Fragment() {
                         }
                     }
 
-                    showChart(entries, labels)
+                    showChart(entries, labels,lineDataSet,lineDataSets)
 
 
                 }
@@ -121,8 +128,6 @@ class OkulVerileriFragment : Fragment() {
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                TODO("Not yet implemented")
-
 
             }
         })
@@ -136,7 +141,7 @@ class OkulVerileriFragment : Fragment() {
         rcOkulVerileri.adapter = adapter
     }
 
-    private fun showChart(entries: ArrayList<Entry>, labels: ArrayList<String>) {
+    private fun showChart(entries: ArrayList<Entry>, labels: ArrayList<String>, lineDataSet: LineDataSet, lineDataSets: ArrayList<LineDataSet>) {
         lineDataSet.setValues(entries)
         lineDataSet.setLabel("Ort. Değerler")
         lineDataSets.clear()

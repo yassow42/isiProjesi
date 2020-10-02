@@ -8,49 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:508237296958:android:0a916b8a0aa1270c58e86f",
-        "android_client_info": {
-          "package_name": "com.creativeoffice.isiprojesi"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "508237296958-1tk6dchvngg8fem26jfem5v9hspjtc59.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDI8Q1mSlYSVigm6d6xMa_zjnLAG74FNrA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "508237296958-1tk6dchvngg8fem26jfem5v9hspjtc59.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:508237296958:android:9e98ac5f8f375c1858e86f",
+        "mobilesdk_app_id": "1:508237296958:android:b3d7e9979641572b58e86f",
         "android_client_info": {
           "package_name": "com.example.isiprojesi"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "508237296958-srpk7h75pc7nn1554co9jq05ghv1lk3q.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.isiprojesi",
-            "certificate_hash": "e73cf3a9ee2238f9858494008b48d2822f4d3f9b"
-          }
-        },
         {
           "client_id": "508237296958-1tk6dchvngg8fem26jfem5v9hspjtc59.apps.googleusercontent.com",
           "client_type": 3

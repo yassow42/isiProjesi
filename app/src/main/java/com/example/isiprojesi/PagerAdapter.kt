@@ -15,7 +15,7 @@ class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         when(position){
             0-> {return "Okul"}
             1-> {return "Öğrenciler"}
-           2-> {return "3333"}
+           2-> {return "Bilgilendirmeler"}
         }
         return super.getPageTitle(position)
     }
@@ -37,4 +37,6 @@ class PagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
             }
         }
     }
+
+
 }

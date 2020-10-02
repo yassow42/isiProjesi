@@ -4,6 +4,7 @@ import android.app.Fragment.instantiate
 import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.isiprojesi.fragmentler.OgrencilerFragment
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -21,6 +23,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.fragment_ogrenciler.*
 import kotlinx.android.synthetic.main.item_ogrenci.view.*
 import kotlin.random.Random
 
@@ -28,7 +31,7 @@ class OgrAdapter(val myContext: Context, val numaraList: ArrayList<Int>, val ort
     var lineDataSet = LineDataSet(null, null)
     var lineDataSets = ArrayList<LineDataSet>()
     lateinit var lineData: LineData
-
+  var lastItemPosition = -1;
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val view = LayoutInflater.from(myContext).inflate(R.layout.item_ogrenci, parent, false)
         return MainHolder(view)
@@ -38,9 +41,20 @@ class OgrAdapter(val myContext: Context, val numaraList: ArrayList<Int>, val ort
         var numara = numaraList[position].toString()
         holder.tvNumara.text = numara
         holder.setData(myContext, numara, ortOkulSicakliklari)
-        val animation = AnimationUtils.loadAnimation(myContext, R.anim.ustten_inme)
-        holder.itemView.startAnimation(animation)
 
+
+        if (position > lastItemPosition) {
+
+            val animation = AnimationUtils.loadAnimation(myContext, R.anim.scale)
+            holder.itemView.startAnimation(animation)
+
+        }
+        else {
+            val animation = AnimationUtils.loadAnimation(myContext, R.anim.item_animation_fall_down)
+            holder.itemView.startAnimation(animation)
+
+        }
+        lastItemPosition = position;
 
 /*
         holder.clVeriler.setOnClickListener {
@@ -86,134 +100,191 @@ class OgrAdapter(val myContext: Context, val numaraList: ArrayList<Int>, val ort
     }
 */
 
-}
-
-override fun getItemCount(): Int {
-    return numaraList.size
-}
-
-class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    val clVeriler = itemView.clVeriler
-    val clNo = itemView.clNo
-
-    val tvNumara = itemView.tvNumara
-    val tvSonSicaklik = itemView.tvSonSicaklik
-    val tvOrtSicaklik = itemView.tvOrtSicaklik
-    val lineChartView = itemView.lineChartView
+    }
 
 
-    val ref = FirebaseDatabase.getInstance().reference
-    var lineDataSet1 = LineDataSet(null, null)
-    var lineDataSet2 = LineDataSet(null, null)
-    var lineDataSets1 = ArrayList<LineDataSet>()
 
-    //  var lineDataSets2 = ArrayList<LineDataSet>()
-    lateinit var lineData1: LineData
-    lateinit var lineData2: LineData
+    override fun getItemCount(): Int {
+        return numaraList.size
+    }
+
+    class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        val clVeriler = itemView.clVeriler
+        val clNo = itemView.clNo
+
+        val tvNumara = itemView.tvNumara
+        val tvSonSicaklik = itemView.tvSonSicaklik
+        val tvOrtSicaklik = itemView.tvOrtSicaklik
+        val lineChartView = itemView.lineChartView
 
 
-    fun setData(myContext: Context, numara: String, ortOkulSicakliklari: ArrayList<Float>) {
-        val ogrEntries = ArrayList<Entry>()
-        val okulEntries = ArrayList<Entry>()
-        val ortOgrLogSicakliklar = ArrayList<Float>()
-        val ortOkulSicakliklar = ArrayList<Float>()
+        val ref = FirebaseDatabase.getInstance().reference
+        var lineDataSet1 = LineDataSet(null, null)
+        var lineDataSet2 = LineDataSet(null, null)
+        var lineDataSets1 = ArrayList<LineDataSet>()
 
-        ref.child("isi_verileri").child(numara).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                if (p0.hasChildren()) {
-                    tvSonSicaklik.text = p0.child("guncel_sicakliklar").value.toString()
-                    if (p0.child("guncel_sicakliklar").value.toString() == "-127") {
-                        tvSonSicaklik.text = "Veri Yanlış"
-                    }
+        //  var lineDataSets2 = ArrayList<LineDataSet>()
+        lateinit var lineData1: LineData
+        lateinit var lineData2: LineData
 
-                    //   val ogrLabels = ArrayList<String>()
 
-                    for (i in p0.child("logs_sicakliklar").children) {
-                        ortOgrLogSicakliklar.add(i.value.toString().toFloat())
-                        if (i.value.toString() == "-127") {
-                            ref.child("isi_verileri").child(numara).child("logs_sicakliklar").child(i.key.toString()).removeValue()
+        fun setData(myContext: Context, numara: String, ortOkulSicakliklari: ArrayList<Float>) {
+            val ogrEntries = ArrayList<Entry>()
+            val okulEntries = ArrayList<Entry>()
+            val ortOgrLogSicakliklar = ArrayList<Float>()
+            val ortOkulSicakliklar = ArrayList<Float>()
+
+            ref.child("isi_verileri").child(numara).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(p0: DataSnapshot) {
+                    if (p0.hasChildren()) {
+                        tvSonSicaklik.text = p0.child("guncel_sicakliklar").value.toString()
+                        if (p0.child("guncel_sicakliklar").value.toString() == "-127") {
+                            tvSonSicaklik.text = "Veri Yanlış"
                         }
-                    }
 
+                        //   val ogrLabels = ArrayList<String>()
 
-                    if (ortOgrLogSicakliklar.size < ortOkulSicakliklari.size) {
-
-                        if (ortOgrLogSicakliklar.size < 10) {
-                            for (sayi in 0..ortOgrLogSicakliklar.size - 1) {
-                                ogrEntries.add(Entry(sayi.toFloat(), ortOgrLogSicakliklar[sayi].toFloat()))
-                                okulEntries.add(Entry(sayi.toFloat(), ortOkulSicakliklari[sayi].toFloat()))
-                                //   ogrLabels.add((sayi).toString())
-                            }
-                        } else {
-                            for (sayi in ortOgrLogSicakliklar.size - 8..ortOgrLogSicakliklar.size - 1) {
-                                ogrEntries.add(Entry(sayi.toFloat(), ortOgrLogSicakliklar[sayi].toFloat()))
-                                okulEntries.add(Entry(sayi.toFloat(), ortOkulSicakliklari[sayi].toFloat()))
-                                //   ogrLabels.add((sayi).toString())
-                            }
-                        }
-                        //  Log.e("dongu", "if içinde")
-
-                    } else {
-                        //  Log.e("dongu", "else")
-
-
-                        var key = ArrayList<String>()
                         for (i in p0.child("logs_sicakliklar").children) {
-                            key.add(i.key.toString())
+                            ortOgrLogSicakliklar.add(i.value.toString().toFloat())
+                            if (i.value.toString() == "-127") {
+                                ref.child("isi_verileri").child(numara).child("logs_sicakliklar").child(i.key.toString()).removeValue()
+                            }
                         }
-                        //     Log.e("rastgele key",key[Random.nextInt(0,key.size-1)].toString())
-                        ref.child("isi_verileri").child(numara).child("logs_sicakliklar").child(key[Random.nextInt(0, key.size - 1)].toString()).removeValue()
 
+
+                        if (ortOgrLogSicakliklar.size < ortOkulSicakliklari.size) {
+
+                            if (ortOgrLogSicakliklar.size < 10) {
+                                for (sayi in 0..ortOgrLogSicakliklar.size - 1) {
+                                    ogrEntries.add(Entry(sayi.toFloat(), ortOgrLogSicakliklar[sayi].toFloat()))
+                                    okulEntries.add(Entry(sayi.toFloat(), ortOkulSicakliklari[sayi].toFloat()))
+                                }
+                            } else {
+                                for (sayi in ortOgrLogSicakliklar.size - 8..ortOgrLogSicakliklar.size - 1) {
+                                    ogrEntries.add(Entry(sayi.toFloat(), ortOgrLogSicakliklar[sayi].toFloat()))
+                                    okulEntries.add(Entry(sayi.toFloat(), ortOkulSicakliklari[sayi].toFloat()))
+
+                                }
+                            }
+
+                        } else {
+
+
+
+                            var key = ArrayList<String>()
+                            for (i in p0.child("logs_sicakliklar").children) {
+                                key.add(i.key.toString())
+                            }
+
+                      //     ref.child("isi_verileri").child(numara).child("logs_sicakliklar").child(key[Random.nextInt(0, key.size - 1)].toString()).removeValue()
+
+                        }
+
+
+                        //     Log.e("ortOgrLogSicakliklar", ortOgrLogSicakliklar.size.toString())
+                        //    Log.e("ortOkulSicakliklari", ortOkulSicakliklari.size.toString())
+
+
+                        tvOrtSicaklik.text = ortOgrLogSicakliklar.average().toDouble().toString()
+                        ref.child("isi_verileri").child(numara).child("ort_sicaklik").setValue(ortOgrLogSicakliklar.average())
+                        showChart(ogrEntries, okulEntries, lineChartView, myContext)
+                    } else {
+                        lineChartView.clear()
+                        lineChartView.invalidate()
                     }
-
-
-                    //     Log.e("ortOgrLogSicakliklar", ortOgrLogSicakliklar.size.toString())
-                    //    Log.e("ortOkulSicakliklari", ortOkulSicakliklari.size.toString())
-
-
-                    tvOrtSicaklik.text = ortOgrLogSicakliklar.average().toDouble().toString()
-                    ref.child("isi_verileri").child(numara).child("ort_sicaklik").setValue(ortOgrLogSicakliklar.average())
-                    showChart(ogrEntries, okulEntries, lineChartView, myContext)
-                } else {
-                    lineChartView.clear()
-                    lineChartView.invalidate()
                 }
-            }
 
-            override fun onCancelled(p0: DatabaseError) {
+                override fun onCancelled(p0: DatabaseError) {
 
-            }
-        })
+                }
+            })
+
+
+        }
+
+        private fun showChart(ogrEntries: ArrayList<Entry>, okulEntries: ArrayList<Entry>, gnlineChartView: LineChart, myContext: Context) {
+            lineDataSet1.setValues(ogrEntries)
+            lineDataSet2.setValues(okulEntries)
+            lineDataSet1.setLabel("Ögr. Vücud")
+            lineDataSet2.setLabel("Okul Ort.")
+            lineDataSets1.clear()
+
+            lineDataSets1.add(lineDataSet1)
+            lineDataSets1.add(lineDataSet2)
+            lineData1 = LineData(lineDataSets1 as List<ILineDataSet>?)
+            //  lineData2 = LineData(lineDataSets2 as List<ILineDataSet>?)
+
+            lineDataSet1.setColors(ContextCompat.getColor(myContext, R.color.mavi))
+            lineDataSet2.setColors(ContextCompat.getColor(myContext, R.color.kirmizi))
+            lineDataSet1.lineWidth = 2f
+            lineDataSet2.lineWidth = 2f
+            lineDataSet1.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
+            lineDataSet2.setCircleColor(ContextCompat.getColor(myContext, R.color.siyah))
+            lineDataSet1.valueTextColor = R.color.beyaz
+            lineDataSet1.valueTextSize = 12f
+            lineDataSet2.valueTextSize = 12f
+
+
+
+            gnlineChartView.setDragOffsetX(15f)
+            gnlineChartView.setNoDataText("Veri Alınamadı")
+            gnlineChartView.setNoDataTextColor(R.color.kirmizi)
+            gnlineChartView.setDrawGridBackground(true)
+            gnlineChartView.setGridBackgroundColor(ContextCompat.getColor(myContext, R.color.sari))
+            gnlineChartView.setBackgroundColor(ContextCompat.getColor(myContext, R.color.beyaz))
+            gnlineChartView.setDrawBorders(true)
+            gnlineChartView.setBorderWidth(0.3f)
+
+
+
+            gnlineChartView.clear()
+            gnlineChartView.data = lineData1
+            //  gnlineChartView.data = lineData2
+            gnlineChartView.invalidate()
+            gnlineChartView.animateY(1000)
+
+            gnlineChartView.description.isEnabled = false
+            gnlineChartView.axisLeft.isEnabled = false
+            gnlineChartView.axisLeft.textSize = 8f
+            gnlineChartView.xAxis.textSize = 8f
+
+            gnlineChartView.xAxis.labelCount = ogrEntries.size
+            //   gnlineChartView.extraBottomOffset = 8f
+            gnlineChartView.xAxis.setDrawAxisLine(false)
+            gnlineChartView.xAxis.setCenterAxisLabels(true)
+
+            gnlineChartView.xAxis.isEnabled = false
+            gnlineChartView.axisLeft.setEnabled(false)
+            gnlineChartView.axisRight.setEnabled(false)
+
+
+        }
 
 
     }
 
-    private fun showChart(ogrEntries: ArrayList<Entry>, okulEntries: ArrayList<Entry>, gnlineChartView: LineChart, myContext: Context) {
-        lineDataSet1.setValues(ogrEntries)
-        lineDataSet2.setValues(okulEntries)
-        lineDataSet1.setLabel("Ögr. Vücud")
-        lineDataSet2.setLabel("Okul Ort.")
-        lineDataSets1.clear()
+    private fun showChart(entries: ArrayList<Entry>, gnlineChartView: LineChart, logSicakliklar: ArrayList<Float>, position: Int) {
 
-        lineDataSets1.add(lineDataSet1)
-        lineDataSets1.add(lineDataSet2)
-        lineData1 = LineData(lineDataSets1 as List<ILineDataSet>?)
-        //  lineData2 = LineData(lineDataSets2 as List<ILineDataSet>?)
-
-        lineDataSet1.setColors(ContextCompat.getColor(myContext, R.color.mavi))
-        lineDataSet2.setColors(ContextCompat.getColor(myContext, R.color.kirmizi))
-        lineDataSet1.lineWidth = 2f
-        lineDataSet2.lineWidth = 2f
-        lineDataSet1.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
-        lineDataSet2.setCircleColor(ContextCompat.getColor(myContext, R.color.siyah))
-        lineDataSet1.valueTextColor = R.color.beyaz
-        lineDataSet1.valueTextSize = 12f
-        lineDataSet2.valueTextSize = 12f
+        //bu detay sayfası ayarları
+        lineDataSet.setValues(entries)
+        lineDataSet.setLabel("Sıcaklık Değeri")
+        lineDataSets.clear()
+        lineDataSets.add(lineDataSet)
+        lineData = LineData(lineDataSets as List<ILineDataSet>?)
 
 
+        lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.mavi))
+        lineDataSet.lineWidth = 2f
+        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
+        lineDataSet.valueTextColor = R.color.beyaz
+        lineDataSet.valueTextSize = 10f
 
-        gnlineChartView.setDragOffsetX(15f)
+        gnlineChartView.clear()
+        gnlineChartView.data = lineData
+        gnlineChartView.invalidate()
+
+
         gnlineChartView.setNoDataText("Veri Alınamadı")
         gnlineChartView.setNoDataTextColor(R.color.kirmizi)
         gnlineChartView.setDrawGridBackground(true)
@@ -222,86 +293,29 @@ class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         gnlineChartView.setDrawBorders(true)
         gnlineChartView.setBorderWidth(0.3f)
 
+        lineDataSet.valueTextSize = 12f
+        lineDataSet.setDrawValues(true)
+        lineDataSet.setDrawCircles(true)
+        lineDataSet.setHighlightEnabled(true)
 
 
-        gnlineChartView.clear()
-        gnlineChartView.data = lineData1
-        //  gnlineChartView.data = lineData2
-        gnlineChartView.invalidate()
-        gnlineChartView.animateY(1000)
+        lineDataSet.valueTextColor = Color.BLUE
+        lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.kirmizi))
+        lineDataSet.lineWidth = 3f
+        lineDataSet.setDrawCircleHole(false)
+        lineDataSet.enableDashedLine(10f, 4f, 0f)
 
+
+        gnlineChartView.xAxis.textSize = 12f
         gnlineChartView.description.isEnabled = false
         gnlineChartView.axisLeft.isEnabled = false
-        gnlineChartView.axisLeft.textSize = 8f
-        gnlineChartView.xAxis.textSize = 8f
-
-        gnlineChartView.xAxis.labelCount = ogrEntries.size
-        //   gnlineChartView.extraBottomOffset = 8f
-        gnlineChartView.xAxis.setDrawAxisLine(false)
-        gnlineChartView.xAxis.setCenterAxisLabels(true)
-
-        gnlineChartView.xAxis.isEnabled = false
-        gnlineChartView.axisLeft.setEnabled(false)
-        gnlineChartView.axisRight.setEnabled(false)
+        gnlineChartView.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        gnlineChartView.xAxis.labelCount = 8
+        gnlineChartView.xAxis.xOffset = 3f
+        gnlineChartView.axisLeft.yOffset = 8f
 
 
     }
-
-
-}
-
-private fun showChart(entries: ArrayList<Entry>, gnlineChartView: LineChart, logSicakliklar: ArrayList<Float>, position: Int) {
-
-    //bu detay sayfası ayarları
-    lineDataSet.setValues(entries)
-    lineDataSet.setLabel("Sıcaklık Değeri")
-    lineDataSets.clear()
-    lineDataSets.add(lineDataSet)
-    lineData = LineData(lineDataSets as List<ILineDataSet>?)
-
-
-    lineDataSet.setColor(ContextCompat.getColor(myContext, R.color.mavi))
-    lineDataSet.lineWidth = 2f
-    lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.yesil))
-    lineDataSet.valueTextColor = R.color.beyaz
-    lineDataSet.valueTextSize = 10f
-
-    gnlineChartView.clear()
-    gnlineChartView.data = lineData
-    gnlineChartView.invalidate()
-
-
-    gnlineChartView.setNoDataText("Veri Alınamadı")
-    gnlineChartView.setNoDataTextColor(R.color.kirmizi)
-    gnlineChartView.setDrawGridBackground(true)
-    gnlineChartView.setGridBackgroundColor(ContextCompat.getColor(myContext, R.color.sari))
-    gnlineChartView.setBackgroundColor(ContextCompat.getColor(myContext, R.color.beyaz))
-    gnlineChartView.setDrawBorders(true)
-    gnlineChartView.setBorderWidth(0.3f)
-
-    lineDataSet.valueTextSize = 12f
-    lineDataSet.setDrawValues(true)
-    lineDataSet.setDrawCircles(true)
-    lineDataSet.setHighlightEnabled(true)
-
-
-    lineDataSet.valueTextColor = Color.BLUE
-    lineDataSet.setCircleColor(ContextCompat.getColor(myContext, R.color.kirmizi))
-    lineDataSet.lineWidth = 3f
-    lineDataSet.setDrawCircleHole(false)
-    lineDataSet.enableDashedLine(10f, 4f, 0f)
-
-
-    gnlineChartView.xAxis.textSize = 12f
-    gnlineChartView.description.isEnabled = false
-    gnlineChartView.axisLeft.isEnabled = false
-    gnlineChartView.xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
-    gnlineChartView.xAxis.labelCount = 8
-    gnlineChartView.xAxis.xOffset = 3f
-    gnlineChartView.axisLeft.yOffset = 8f
-
-
-}
 
 }
 
